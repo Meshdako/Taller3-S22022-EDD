@@ -29,11 +29,16 @@ using namespace std;
 int main()
 {
     int indice = 0; //indice del vector  o cantidad actual de elementos en el vector
-    string nombreArchivo ="servel.txt";
+    string nombreArchivo ="servel_pruebas.txt";
     
     Elector Electores[MAX_VECTOR];
+    Lista miLista;
 
     archivoAVector(nombreArchivo, Electores, indice);
+    vectorALista(Electores, miLista, indice);
+    //MostrarLista(miLista);
+
+    Menu(miLista);
 
     return 0;
 }
