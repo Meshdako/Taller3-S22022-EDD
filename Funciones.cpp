@@ -1,5 +1,105 @@
 #include "Funciones.h"
 
+typedef struct Nodo{
+    Elector Info;
+    struct Nodo *Link;
+}Nodo;
+
+typedef struct Lista{
+    Nodo *Cabeza;
+}Lista;
+
+Nodo* CrearNodo(Elector e)
+{
+    Nodo* Aux = new Nodo();
+    Aux->Info = e;
+    Aux->Link = NULL;
+    return Aux;
+}
+
+void AgregarIzq(Lista &L, Elector e)
+{
+    Nodo* Aux = CrearNodo(e);
+    Aux->Link = L.Cabeza;
+    L.Cabeza = Aux;
+}
+
+void AgregarDer(Lista &L, Elector e)
+{
+    Nodo* Aux = CrearNodo(e);
+
+    if(L.Cabeza == NULL){
+        L.Cabeza = Aux;
+    }
+    else{
+        Nodo* Aux_L = L.Cabeza;
+
+        while(Aux_L->Link){
+            Aux_L = Aux_L->Link;
+        }
+        Aux_L->Link = Aux;
+    }
+}
+
+void MostrarLista(Lista &L)
+{
+    Nodo* Aux = L.Cabeza;
+
+    //Recorremos la lista con un Nodo Auxiliar.
+    while(Aux != NULL){
+        Aux->Info.verElector();
+        Aux = Aux->Link;
+    }
+}
+
+void PressEnterToContinue()
+{
+    cout << "Presiona Enter para continuar... " << flush;
+    cin.ignore(numeric_limits <std::streamsize> ::max(), '\n' ); 
+}
+
+void Menu(Lista &L)
+{
+    int opcion;
+
+    do{
+        system("clear");
+        cout << "\e[1mSeleccione una opción:\e[0m" << endl;
+        cout << "1.- Búsqueda por RUT." << endl;
+        cout << "2.- Búsqueda por Comuna." << endl;
+        cout << "3.- Búsqueda por Año." << endl;
+        cout << "4.- Búsqueda de inhabilitados para sufragar por Letra (Apellido Paterno)." << endl;
+        cout << "5.- Totalizador" << endl;
+        cout << "0.- Salir" << endl;
+        cout << ">> ";
+        cin >> opcion;
+        cin.ignore(numeric_limits <std::streamsize> ::max(), '\n');
+
+        switch(opcion){
+            case 1:
+                break;
+            case 2:
+                break;
+            case 3:
+                break;
+            case 4:
+                break;
+            case 5:
+                break;
+            default:
+                cout << "Seleccione una opción válida." << endl;
+                break;
+        }
+    }while(opcion != 0);
+}
+
+void vectorALista(Elector p[], Lista &L, int indice)
+{
+    for(int i = 0; i < indice; i++){
+        AgregarDer(L, p[i]);
+    }
+}
+
 void archivoAVector(string nombreArchivo, Elector p[] , int &indice){
     ifstream archivo;
     string lineaObtenida;
@@ -8,8 +108,6 @@ void archivoAVector(string nombreArchivo, Elector p[] , int &indice){
     archivo.open(nombreArchivo, ios::in);
 
     if(archivo.is_open() == true) {
-        //Eliminamos la primera línea.
-        getline(archivo, lineaObtenida, '\n');
 
         while( getline(archivo, lineaObtenida, '\n')){
             //ahora recorremos la línea
