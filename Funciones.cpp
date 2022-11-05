@@ -1,5 +1,7 @@
 #include "Funciones.h"
 
+#define MAX_VECTOR 1000
+
 typedef struct Nodo{
     Elector Info;
     struct Nodo *Link;
@@ -58,18 +60,78 @@ void PressEnterToContinue()
     cin.ignore(numeric_limits <std::streamsize> ::max(), '\n' ); 
 }
 
+void CantidadElectores(Lista &L)
+{
+    int cont_1, cont_2, cont_3;
+    Nodo* Aux = L.Cabeza;
+
+    cont_1 = cont_2 = cont_3 = 0;
+
+    while(Aux != NULL){
+        if(Aux->Info.getSufragio() == 1)
+            cont_2++;
+
+        if(Aux->Info.getVocal() == 1)
+            cont_3++;
+
+        cont_1++;
+
+        Aux = Aux->Link;
+    }
+
+    cout << "Total de electores: " << cont_1 << endl;
+    cout << "Total de personas habilitadas para votar: " << cont_2 << endl;
+    cout << "Total de vocales de mesa: " << cont_3 << endl;
+}
+
+void ElectoresXComuna(Lista &L, string in_Comuna)
+{
+    int n = 0;
+
+    Elector misElectores[MAX_VECTOR];
+    Elector el_Aux;
+    Nodo* Aux = L.Cabeza;
+
+    while(Aux != NULL){
+        if(in_Comuna == Aux->Info.getDireccion().getComuna()){
+            misElectores[n] = Aux->Info;
+            n++;
+        }
+
+        Aux = Aux->Link;
+    }
+
+    for(int i = 0; i < n; i++){
+        for(int j = 0; j < n; j++){
+            if(misElectores[j].getNombres() > misElectores[j + 1].getNombres()){
+                el_Aux = misElectores[j];
+                misElectores[j] = misElectores[j + 1];
+                misElectores[j + 1] = el_Aux;
+            }
+        }
+    }
+
+    for(int i = 0; i < n; i++){
+        misElectores[i].verElector();
+    }
+
+    PressEnterToContinue();
+}
+
 void Menu(Lista &L)
 {
     int opcion;
 
+    string in_Comuna;
+
     do{
         system("clear");
         cout << "\e[1mSeleccione una opción:\e[0m" << endl;
-        cout << "1.- Búsqueda por RUT." << endl;
-        cout << "2.- Búsqueda por Comuna." << endl;
-        cout << "3.- Búsqueda por Año." << endl;
-        cout << "4.- Búsqueda de inhabilitados para sufragar por Letra (Apellido Paterno)." << endl;
-        cout << "5.- Totalizador" << endl;
+        cout << "1.- Cantidad de Electores." << endl;
+        cout << "2.- Electores por Comuna." << endl;
+        cout << "3.- Inhabilitados para Sufragar." << endl;
+        cout << "4.- Eliminar Votante." << endl;
+        cout << "5.- Agregar Votante" << endl;
         cout << "0.- Salir" << endl;
         cout << ">> ";
         cin >> opcion;
@@ -77,17 +139,30 @@ void Menu(Lista &L)
 
         switch(opcion){
             case 1:
+                CantidadElectores(L);
+                PressEnterToContinue();
                 break;
             case 2:
+                cout << "Ingrese la comuna que desea buscar (ej: LA CISTERNA): ";
+                getline(cin >> ws, in_Comuna);
+
+                ElectoresXComuna(L, in_Comuna);
                 break;
             case 3:
+                cout << "Estamos trabajando para usted." << endl;
+                PressEnterToContinue();
                 break;
             case 4:
+                cout << "Estamos trabajando para usted." << endl;
+                PressEnterToContinue();
                 break;
             case 5:
+                cout << "Estamos trabajando para usted." << endl;
+                PressEnterToContinue();
                 break;
             default:
                 cout << "Seleccione una opción válida." << endl;
+                PressEnterToContinue();
                 break;
         }
     }while(opcion != 0);
