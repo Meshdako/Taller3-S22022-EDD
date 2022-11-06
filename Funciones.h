@@ -3,6 +3,8 @@
 #include <sstream>      //relacionada a string stream https://www.cplusplus.com/reference/sstream/
 #include <vector>       //relacionada al manejo de vectores dinámicos
 #include <limits>       //relacionada a los límites de valores
+#include <utility>      //relacionada al intercambio entre dos elementos.
+#include <cctype>
 
 //Clases
 #include "Clases/Direccion.h"
@@ -45,11 +47,11 @@ void ElectoresXComuna(Lista &L, string in_Comuna);
 void InhabilitadosSufragio(Lista &L);
 
 // Implementa una función que dado un RUT, deberá eliminar dicha información desde la LLS y retornar true si lo pudo eliminar correctamente y false si no lo encontró. Luego en base al valor retornado por la función deberá mostrar un mensaje apropiado.
-bool EliminarVotante(Lista &L);
+bool EliminarVotante(Lista &L, int in_Run);
 
 // Implementa correctamente una función o dos funciones que tienen como parámetros una LLS y un objeto de tipo Elector, el que deberá agregar a la LLS. El usuario indicará si se agrega al comienzo o al final de la lista y se deberá llamar a la función correspondiente
-Elector CrearElector();
-void AgrearVotante(Lista &L);
+Elector CrearElector(Elector e);
+void AgrearVotante(Lista &L, Elector e);
 
 /* Menú de opciones */
 
