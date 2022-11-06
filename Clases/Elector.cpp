@@ -23,6 +23,5 @@ void Elector::verElector()
     cout << "\e[1m¿Es vocal de mesa?\e[0m ";
     (Vocal == 1) ? cout << "Sí" << endl : cout << "No" << endl;
     
-    cout << "\e[1mMesa de votación:\e[0m ";
-    (Mesa == 1) ? cout << "Sí" << endl : cout << "No" << endl;
+    cout << "\e[1mMesa de votación:\e[0m " << Mesa << endl;
 }
