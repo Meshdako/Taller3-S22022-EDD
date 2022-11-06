@@ -86,36 +86,238 @@ void CantidadElectores(Lista &L)
 
 void ElectoresXComuna(Lista &L, string in_Comuna)
 {
-    int n = 0;
+    system("clear");
 
-    Elector misElectores[MAX_VECTOR];
+    vector<Elector> misElectores;
     Elector el_Aux;
     Nodo* Aux = L.Cabeza;
 
+    // Guardamos los electores de la comuna buscada en un Vector.
     while(Aux != NULL){
         if(in_Comuna == Aux->Info.getDireccion().getComuna()){
-            misElectores[n] = Aux->Info;
-            n++;
+            misElectores.push_back(Aux->Info);
         }
 
         Aux = Aux->Link;
     }
 
-    for(int i = 0; i < n; i++){
-        for(int j = 0; j < n; j++){
-            if(misElectores[j].getNombres() > misElectores[j + 1].getNombres()){
-                el_Aux = misElectores[j];
-                misElectores[j] = misElectores[j + 1];
-                misElectores[j + 1] = el_Aux;
+    // Ordenamos con el método burbuja y utilizamos la función Swap de la librería Utility.
+    for(int i = 0; i < misElectores.size(); i++){
+        for(int j = 0; j < misElectores.size(); j++){
+            // Priorizamos no avanzar más allá del tamaño de nuestro Vector.
+            if((j + 1) < misElectores.size()){
+                if(misElectores[j].getNombres() > misElectores[j + 1].getNombres()){
+                    swap(misElectores[j], misElectores[j + 1]);
+                }
             }
         }
     }
 
-    for(int i = 0; i < n; i++){
+    // Imprimimos nuestro Vector.
+    for(int i = 0; i < misElectores.size(); i++){
         misElectores[i].verElector();
     }
-
     PressEnterToContinue();
+}
+
+void InhabilitadosSufragio(Lista &L)
+{
+
+}
+
+bool EliminarVotante(Lista &L, int in_Run)
+{
+    Nodo* Aux = L.Cabeza;
+    Nodo* Prev = NULL;
+
+    // Buscamos el RUT o llegamos al final de la Lista.
+    while(Aux != NULL && in_Run != Aux->Info.getRUN().getRun()){
+        Prev = Aux;
+        Aux = Aux->Link;
+    }
+
+    // Si la Lista está vacía, es que el RUT no se encontró o no existe.
+    if(Aux == NULL)
+        return false;
+    
+    // En caso contrario, el Nodo previo apunta al siguiente del Nodo actual. Luego, eliminamos el Nodo actual.
+    Prev->Link = Aux->Link;
+    delete Aux;
+
+    return true;
+
+    /* Método alternativo */
+    
+    /* int sePudo = 0;
+
+    // Mientras exista un siguiente, recorremos la Lista.
+    while(Aux->Link){
+        if(in_Run == Aux->Link->Info.getRUN().getRun()){
+            // Cuando encontramos el rut, el siguente de nuestro Nodo actual, apunta al siguiente del Nodo siguiente. Luego, eliminamos el Nodo siguiente.
+            Aux->Link = Aux->Link->Link;
+            delete Aux->Link;
+
+            // Asignamos como 1 la variable.
+            sePudo = 1;
+        }
+        Aux = Aux->Link;
+    }
+
+    // Dependiendo del resultado, devolvemos Verdadero o Falso.
+    if(sePudo == 1)
+        return true;
+    else
+        return false; */
+}
+
+Elector CrearElector(Elector e)
+{
+    int Resp, in_Run, Fecha_Cumpleanhos, in_Numero;
+    char in_DV;
+    string Data;
+
+    RUN Run_Aux;
+    Fecha Fecha_Aux;
+    Direccion Dir_Aux;
+
+    Resp = 0;
+
+    do{
+        cout << "Ingrese el RUT sin DV, de la persona: ";
+        cin >> in_Run;
+        cin.ignore(numeric_limits <std::streamsize> ::max(), '\n');
+
+        Run_Aux.setRun(in_Run);
+
+        cout << "Ingrese el DV: ";
+        cin >> in_DV;
+
+        Run_Aux.setDv(in_DV);
+        
+        e.setRUN(Run_Aux);
+
+        cout << "Ingrese el/los Nombre/s de la persona: ";
+        getline(cin >> ws, Data);
+
+        e.setNombres(Data);
+
+        cout << "Ingrese el Apellido Paterno de la persona: ";
+        getline(cin >> ws, Data);
+
+        e.setPaterno(Data);
+
+        cout << "Ingrese el Apellido Materno de la persona: ";
+        getline(cin >> ws, Data);
+
+        e.setMaterno(Data);
+
+        cout << "Ingrese la Fecha de Nacimiento." << endl;
+        cout << "Día: ";
+        cin >> Fecha_Cumpleanhos;
+        cin.ignore(numeric_limits <std::streamsize> ::max(), '\n');
+        
+        Fecha_Aux.setDia(Fecha_Cumpleanhos);
+
+        cout << "Mes: ";
+        cin >> Fecha_Cumpleanhos;
+        cin.ignore(numeric_limits <std::streamsize> ::max(), '\n');
+
+        Fecha_Aux.setMes(Fecha_Cumpleanhos);
+
+        cout << "Año: ";
+        cin >> Fecha_Cumpleanhos;
+        cin.ignore(numeric_limits <std::streamsize> ::max(), '\n');
+
+        Fecha_Aux.setAnho(Fecha_Cumpleanhos);
+        
+        e.setFecha(Fecha_Aux);
+
+        cout << "Ingrese la Dirección Particular." << endl;
+        cout << "Calle: ";
+        getline(cin >> ws, Data);
+
+        Dir_Aux.setCalle(Data);
+
+        cout << "Número: ";
+        cin >>  in_Numero;
+        cin.ignore(numeric_limits <std::streamsize> ::max(), '\n');
+
+        Dir_Aux.setNumero(in_Numero);
+
+        cout << "Comuna: ";
+        getline(cin >> ws, Data);
+
+        /* Pequeña función */
+        for(int i = 0; Data[i]; i++){
+            Data[i] = toupper(Data[i]);
+        }
+
+        Dir_Aux.setComuna(Data);
+
+        e.setDireccion(Dir_Aux);
+
+        cout << "Ingrese los Datos Electorales." << endl;
+        cout << "¿Está habilitado para sufragar? Sí = 1 / No = 0" << endl;
+        cin >> in_Numero;
+        cin.ignore(numeric_limits <std::streamsize> ::max(), '\n');
+
+        e.setSufragio(in_Numero);
+
+        cout << "¿Es Vocal de Mesa? Sí = 1 / No = 0" << endl;
+        cin >> in_Numero;
+        cin.ignore(numeric_limits <std::streamsize> ::max(), '\n');
+
+        e.setVocal(in_Numero);
+
+        cout << "¿En qué Mesa le tocó votar? ";
+        cin >> in_Numero;
+        cin.ignore(numeric_limits <std::streamsize> ::max(), '\n');
+
+        e.setMesa(in_Numero);
+        
+        cout << "Se mostrarán los datos ingresados..." << endl;
+        PressEnterToContinue();
+
+        system("clear");
+        e.verElector();
+
+        cout << "Los datos ingresados, ¿Son correctos?" << endl;
+        cout << "Sí = 1 / No = 0" << endl;
+        cin >> Resp;
+
+        if(Resp == 0){
+            cout << "Se volverán a preguntar los datos." << endl;
+            PressEnterToContinue();
+        }
+    }while(Resp != 1);
+
+    return e;
+}
+
+void AgrearVotante(Lista &L, Elector e)
+{
+    int Resp;
+    Elector Aux = CrearElector(e);
+
+    cout << "¿Desea agregar al nuevo Elector al Inicio de la Lista?" << endl;
+    cout << "Sí = 1 / No = 0" << endl;
+    cin >> Resp;
+    cin.ignore(numeric_limits <std::streamsize> ::max(), '\n');
+
+    if(Resp == 1){
+        system("clear");
+        cout << "Agregando Elector por la Izquierda..." << endl;
+        AgregarIzq(L, Aux);
+        cout << "Elector agregado." << endl;
+        PressEnterToContinue();
+    }
+    else{
+        system("clear");
+        cout << "Agregando Elector por la Derecha..." << endl;
+        AgregarDer(L, Aux);
+        cout << "Elector agregado." << endl;
+        PressEnterToContinue();
+    }
 }
 
 void Menu(Lista &L)
@@ -123,6 +325,10 @@ void Menu(Lista &L)
     int opcion;
 
     string in_Comuna;
+    int in_Run;
+    bool resp;
+
+    Elector e;
 
     do{
         system("clear");
@@ -138,6 +344,10 @@ void Menu(Lista &L)
         cin.ignore(numeric_limits <std::streamsize> ::max(), '\n');
 
         switch(opcion){
+            case 0:
+                cout << "\t\t\e[1mSee You Space Cowboy...\e[0m" << endl;
+                PressEnterToContinue();
+                break;
             case 1:
                 CantidadElectores(L);
                 PressEnterToContinue();
@@ -153,12 +363,17 @@ void Menu(Lista &L)
                 PressEnterToContinue();
                 break;
             case 4:
-                cout << "Estamos trabajando para usted." << endl;
+                cout << "Ingrese el RUT que desea eliminar: ";
+                cin >> in_Run;
+                cin.ignore(numeric_limits <std::streamsize> ::max(), '\n');
+
+                resp = EliminarVotante(L, in_Run);
+
+                (resp == true) ? cout << "El Elector fue eliminado con éxito." << endl : cout << "El Elector no fue encontrado. Intente de nuevo." << endl;
                 PressEnterToContinue();
                 break;
             case 5:
-                cout << "Estamos trabajando para usted." << endl;
-                PressEnterToContinue();
+                AgrearVotante(L, e);
                 break;
             default:
                 cout << "Seleccione una opción válida." << endl;
