@@ -1,6 +1,6 @@
 #include "Funciones.h"
 
-#define MAX_VECTOR 1000
+#define MAX_VECTOR 1001
 
 typedef struct Nodo{
     Elector Info;

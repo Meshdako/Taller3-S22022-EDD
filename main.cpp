@@ -24,12 +24,12 @@
 
 using namespace std;
 
-#define MAX_VECTOR 1000
+#define MAX_VECTOR 1001
 
 int main()
 {
     int indice = 0; //indice del vector  o cantidad actual de elementos en el vector
-    string nombreArchivo ="servel_pruebas.txt";
+    string nombreArchivo ="servel.txt";
     
     Elector Electores[MAX_VECTOR];
     Lista miLista;
