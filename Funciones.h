@@ -15,7 +15,19 @@
 
 using namespace std;
 
-/* Estructuras y funciones para los Nodos y las Listas. */
+/* Función 3: Inhabilitados para Sufragar */
+
+typedef struct n_Nodo n_Nodo;
+
+typedef n_Nodo * n_Lista;
+
+n_Nodo* CrearNuevoNodo(RUN r, string n);
+
+void AgregarNuevaLista(n_Lista &NL, RUN r, string n);
+
+int MostrarNuevaLista(n_Lista &NL);
+
+/* Estructura de la Lista */
 
 typedef struct Nodo Nodo;
 
