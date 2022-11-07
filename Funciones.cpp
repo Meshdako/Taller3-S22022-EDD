@@ -2,6 +2,52 @@
 
 #define MAX_VECTOR 1001
 
+/* Función 3: Inhabilitados para Sufragar */
+
+typedef struct n_Nodo{
+    RUN su_RUT;
+    string Nombres;
+    n_Nodo *Link;
+}n_Nodo;
+
+typedef n_Nodo * n_Lista;
+
+n_Nodo* CrearNuevoNodo(RUN r, string n)
+{
+    n_Nodo* Aux = new n_Nodo();
+    Aux->su_RUT = r;
+    Aux->Nombres = n;
+    Aux->Link = NULL;
+    return Aux;
+}
+
+void AgregarNuevaLista(n_Lista &NL, RUN r, string n)
+{
+    n_Nodo* Aux = CrearNuevoNodo(r, n);
+    Aux->Link = NL;
+    NL = Aux;
+}
+
+int MostrarNuevaLista(n_Lista &NL)
+{
+    int cont = 0;
+    n_Nodo* Aux = NL;
+
+    //Recorremos la lista con un Nodo Auxiliar.
+    while(Aux != NULL){
+        cont++;
+
+        Aux->su_RUT.verRun();
+        cout << "\tNombre/s: " << Aux->Nombres << endl;
+
+        Aux = Aux->Link;
+    }
+    
+    return cont;
+}
+
+/* Estructura de la Lista */
+
 typedef struct Nodo{
     Elector Info;
     struct Nodo *Link;
@@ -122,7 +168,31 @@ void ElectoresXComuna(Lista &L, string in_Comuna)
 
 void InhabilitadosSufragio(Lista &L)
 {
+    int cont;
+    Nodo* Aux = L.Cabeza;
+    
+    // Creamos la Nueva Lista.
+    n_Lista miNuevaLista;
 
+    while(Aux != NULL){
+        if(Aux->Info.getSufragio() == 0){            
+            // Agregamos a la Nueva Lista, por la izquierda.
+            AgregarNuevaLista(miNuevaLista, Aux->Info.getRUN(), Aux->Info.getNombres());
+        }
+
+        Aux = Aux->Link;
+    }
+
+    cout << "Personas inhabilitadas para votar agregadas a la nueva lista." << endl;
+    cout << "Se mostrarán las personas agregadas." << endl;
+    PressEnterToContinue();
+
+    system("clear");
+
+    // Imprimimos la Nueva Lista.
+    cont = MostrarNuevaLista(miNuevaLista);
+
+    cout << "Total de personas inhabilitadas para votar: " << cont << endl;
 }
 
 bool EliminarVotante(Lista &L, int in_Run)
@@ -183,7 +253,7 @@ Elector CrearElector(Elector e)
     Resp = 0;
 
     do{
-        cout << "Ingrese el RUT sin DV, de la persona: ";
+        cout << "Ingrese el RUT (sin puntos y sin DV), de la persona: ";
         cin >> in_Run;
         cin.ignore(numeric_limits <std::streamsize> ::max(), '\n');
 
@@ -359,7 +429,7 @@ void Menu(Lista &L)
                 ElectoresXComuna(L, in_Comuna);
                 break;
             case 3:
-                cout << "Estamos trabajando para usted." << endl;
+                InhabilitadosSufragio(L);
                 PressEnterToContinue();
                 break;
             case 4:
